@@ -1,21 +1,36 @@
 version: '3'
 services:
   mysql:
+    container_name: mysql
     image: mysql:5.7
     volumes:
-      - ./infra/mysql:/var/lib/mysql
+      - ./web/db:/var/lib/mysql
     environment: 
-      MYSQL_DATABASE: test_db
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: database
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
     ports:
       - 3306:3306
-  php:
-    build: ./infra/php
+
+  web:
+    container_name: web_php
+    build: ./web
     volumes:
       - ./html:/var/www/html
     ports:
       - 8080:80
     depends_on:
       - mysql
-volumes:
-  mysql:
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=mysql
+      - PMA_USER=docker
+      - PMA_PASSWORD=docker
+    ports:
+      - 8081:80

@@ -1,2 +1,4 @@
 # database
 mysql/
+vendor/
+web/db/
